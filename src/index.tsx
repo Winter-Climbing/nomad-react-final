@@ -1,70 +1,103 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App";
+
 import { RecoilRoot } from "recoil";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
+import { RouterProvider } from "react-router-dom";
+
 import { theme } from "./theme";
+import { router } from "./Router";
 
 const GlobalStyle = createGlobalStyle`
-@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&family=Noto+Sans+KR&family=Source+Sans+Pro:wght@300;400&display=swap');
+*:where(:not(html, iframe, canvas, img, svg, video, audio):not(svg *, symbol *)) {
+    all: unset;
+    display: revert;
+}
 
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-b, u, i, center,
-dl, dt, dd, menu, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed,
-figure, figcaption, footer, header, hgroup,
-main, menu, nav, output, ruby, section, summary,
-time, mark, audio, video {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  font-size: 100%;
-  font: inherit;
-  vertical-align: baseline;
+/* Preferred box-sizing value */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
 }
-/* HTML5 display-role reset for older browsers */
-article, aside, details, figcaption, figure,
-footer, header, hgroup, main, menu, nav, section {
-  display: block;
+
+/* Reapply the pointer cursor for anchor tags */
+a, button {
+    cursor: revert;
 }
-/* HTML5 hidden-attribute fix for newer browsers */
-*[hidden] {
+
+/* Remove list styles (bullets/numbers) */
+ol, ul, menu {
+    list-style: none;
+}
+
+/* For images to not be able to exceed their container */
+img {
+    max-inline-size: 100%;
+    max-block-size: 100%;
+}
+
+/* removes spacing between cells in tables */
+table {
+    border-collapse: collapse;
+}
+
+/* Safari - solving issue when using user-select:none on the <body> text input doesn't working */
+input, textarea {
+    -webkit-user-select: auto;
+}
+
+/* revert the 'white-space' property for textarea elements on Safari */
+textarea {
+    white-space: revert;
+}
+
+/* minimum style to allow to style meter element */
+meter {
+    -webkit-appearance: revert;
+    appearance: revert;
+}
+
+/* preformatted text - use only for this feature */
+:where(pre) {
+    all: revert;
+}
+
+/* reset default text opacity of input placeholder */
+::placeholder {
+    color: unset;
+}
+
+/* remove default dot (•) sign */
+::marker {
+    content: initial;
+}
+
+/* fix the feature of 'hidden' attribute.
+   display:revert; revert to element instead of attribute */
+:where([hidden]) {
     display: none;
 }
-body {
-  margin: auto;
-  width: 60%;
-  font-weight: 300;
-  font-family: 'Source Sans Pro', sans-serif;
-  line-height: 1.2;
+
+/* revert for bug in Chromium browsers
+   - fix for the content editable attribute will work properly.
+   - webkit-user-select: auto; added for Safari in case of using user-select:none on wrapper element*/
+:where([contenteditable]:not([contenteditable="false"])) {
+    -moz-user-modify: read-write;
+    -webkit-user-modify: read-write;
+    overflow-wrap: break-word;
+    -webkit-line-break: after-white-space;
+    -webkit-user-select: auto;
 }
-menu, ol, ul {
-  list-style: none;
+
+/* apply back the draggable feature - exist only in Chromium and Safari */
+:where([draggable="true"]) {
+    -webkit-user-drag: element;
 }
-blockquote, q {
-  quotes: none;
-}
-blockquote:before, blockquote:after,
-q:before, q:after {
-  content: '';
-  content: none;
-}
-table {
-  border-collapse: collapse;
-  border-spacing: 0;
-}
-* {
-  box-sizing: border-box;
-}
-a {
-  text-decoration: none;
-  color: inherit;
+
+/* Revert Modal native behavior */
+:where(dialog:modal) {
+    all: revert;
 }
 `;
 
@@ -77,7 +110,7 @@ root.render(
     <RecoilRoot>
       <ThemeProvider theme={theme}>
         <GlobalStyle />
-        <App />
+        <RouterProvider router={router} />
       </ThemeProvider>
     </RecoilRoot>
   </React.StrictMode>
